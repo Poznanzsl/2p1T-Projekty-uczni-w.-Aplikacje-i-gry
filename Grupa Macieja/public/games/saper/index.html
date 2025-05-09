@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script>
+    <title>Saper</title>
+</head>
+<body>
+    <h1>Saper</h1>
+    <div class="difficulty-selector">
+        <label for="difficulty">Wybierz poziom trudności:</label>
+        <select id="difficulty">
+            <option value="easy">Łatwy</option>
+            <option value="medium">Średni</option>
+            <option value="hard">Trudny</option>
+            <option value="custom">Niestandardowy</option>
+        </select>
+        <div id="custom-difficulty" style="display: none;">
+            <label for="rows">Liczba wierszy:</label>
+            <input type="number" id="rows" value="10" min="1">
+            <label for="cols">Liczba kolumn:</label>
+            <input type="number" id="cols" value="10" min="1">
+            <label for="mines">Liczba min:</label>
+            <input type="number" id="mines" value="10" min="1">
+        </div>
+    </div>
+    <div class="game-container">
+        <div id="board"></div>
+        <div class="controls">
+            <button id="start-button">Start</button>
+            <button id="reset-button">Reset</button>
+        </div>
+        <div class="scoreboard">
+            <div class="score">Wynik: <span id="score">0</span></div>
+            <div class="time">Czas: <span id="time">0</span>s</div>
+        </div>
+    </div>
+</body>
+</html>
