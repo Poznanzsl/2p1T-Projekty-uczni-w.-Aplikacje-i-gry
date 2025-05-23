@@ -1,5 +1,5 @@
 body{
-    background-color: #222222;
+    background-color: #1a1a1a;
     color: #e4e4e4;
     font-family: Arial, sans-serif;
     text-align: center;
@@ -24,17 +24,27 @@ body{
 #board div{
     height: 30px;
     width: 30px;
-    border: 1px solid #444444;
-    background-color: #333333;
+    border: 1px solid #313131;
+    background-color: #252525;
     cursor: pointer;
     text-align: center;
     font-size: 20px;
     color: #e4e4e4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 #board div:hover{
-    background-color: #444444;
+    background-color: #333333;
 }
 #board div.revealed{
-    background-color: #555555;
+    background-color: #303030;
     cursor: default;
+}
+#board div.flagged{
+    cursor: default;
+}
+
+.hidden {
+    display: none !important;
 }

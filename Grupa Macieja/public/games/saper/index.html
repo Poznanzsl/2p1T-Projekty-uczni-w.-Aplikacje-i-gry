@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="main.js"></script>
+    <script src="main.js" defer></script>
     <title>Saper</title>
 </head>
 <body>
@@ -19,9 +19,9 @@
         </select>
         <div id="custom-difficulty" style="display: none;">
             <label for="rows">Liczba wierszy:</label>
-            <input type="number" id="rows" value="10" min="1">
+            <input type="number" id="rows" value="10" min="1" max="50">
             <label for="cols">Liczba kolumn:</label>
-            <input type="number" id="cols" value="10" min="1">
+            <input type="number" id="cols" value="10" min="1" max="50">
             <label for="mines">Liczba min:</label>
             <input type="number" id="mines" value="10" min="1">
         </div>
@@ -29,13 +29,21 @@
     <div class="game-container">
         <div id="board"></div>
         <div class="controls">
-            <button id="start-button">Start</button>
-            <button id="reset-button">Reset</button>
+            <button id="start-button" onclick="startGame()">Start</button>
+            <button id="reset-button" onclick="resetGame()">Reset</button>
         </div>
         <div class="scoreboard">
-            <div class="score">Wynik: <span id="score">0</span></div>
+            <div class="score">Pozostało min: <span id="mines-remaining">0</span></div>
             <div class="time">Czas: <span id="time">0</span>s</div>
         </div>
+    </div>
+    <div id="game-over" class="hidden"> 
+        <h2>Game Over</h2>
+        <button onclick="restartFullGame()">Zagraj ponownie</button> 
+    </div>
+    <div id="win" class="hidden"> 
+        <h2>Gratulacje! Wygrałeś!</h2>
+        <button onclick="restartFullGame()">Zagraj ponownie</button> 
     </div>
 </body>
 </html>

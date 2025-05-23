@@ -10,11 +10,11 @@ const geistSans = Geist({
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
-})
+});
 
 export const metadata: Metadata = {
-  title: "Games",
-  description: "Games",
+  title: "Nudge",
+  description: "Nudge is the most beautiful web minigame centre.",
 };
 
 export default function RootLayout({

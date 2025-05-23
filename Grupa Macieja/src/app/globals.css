@@ -11,18 +11,18 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #eeeeff;
   --foreground: #171717;
-  --card: rgb(231, 231, 231);
-  --border: #e2e2e2;
+  --card: #d2d2e2;
+  --border: #c4c3cc;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #13111d;
     --foreground: #ededed;
-    --card: #1d1d1d;
-    --border: #1d1d1d;
+    --card: #201d2c;
+    --border: #323135;
   }
 }
 
