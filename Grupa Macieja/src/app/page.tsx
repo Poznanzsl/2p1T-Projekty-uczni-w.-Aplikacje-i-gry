@@ -67,7 +67,7 @@ export default async function HomePage() {
     <main className="flex min-h-screen flex-col items-center bg-background p-10 text-foreground font-sans">
       {/* Enhanced Welcome Card */}
       {session ? (
-        <WelcomeCard firstName={session.user.name.split(" ")[0]} />
+        <WelcomeCard firstName={session?.user?.name?.split(" ")[0] ?? "<error>"} />
       ) : (
         <LoginCard />
       )}

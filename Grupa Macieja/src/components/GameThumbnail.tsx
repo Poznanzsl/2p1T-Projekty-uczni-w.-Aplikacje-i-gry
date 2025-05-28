@@ -10,7 +10,7 @@ interface Game {
   favourite: boolean;
   title: string;
   thumbnailUrl: string;
-  link: string;
+  link?: string;
 }
 
 interface GameThumbnailProps {

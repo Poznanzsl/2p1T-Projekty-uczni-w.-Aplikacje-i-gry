@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Sudoku</title>
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Sudoku</h1>
+        </header>
+
+        <div class="controls-panel">
+            <div class="difficulty-section">
+                <h2>Poziom Trudności:</h2>
+                <div id="difficulty-selector" class="button-group">
+                    <!-- Przyciski trudności zostaną tu dodane przez JS -->
+                </div>
+            </div>
+
+            <div class="actions-section">
+                <h2>Akcje:</h2>
+                <div class="button-group">
+                    <button id="new-game-btn">Nowa Gra</button>
+                    <!--  <button id="validate-btn">Sprawdź</button> -->
+                    <button id="hint-btn">Podpowiedź</button>
+                    <!-- <button id="solve-btn">Pokaż Rozwiązanie</button> -->
+                    <button id="reset-btn">Resetuj Planszę</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sudoku-area">
+            <div id="sudoku-board">
+                <!-- Plansza Sudoku zostanie tu wyrenderowana przez JS -->
+            </div>
+        </div>
+
+        <div class="input-panel">
+            <div class="info-display">
+                <p>Czas: <span id="timer">00:00</span></p>
+                <p>Błędy: <span id="mistakes-count">0</span></p>
+            </div>
+            <div id="digits-pad" class="digits">
+                <!-- Przyciski cyfr zostaną tu dodane przez JS -->
+            </div>
+            <div id="game-message" class="game-message-display">
+                <!-- Komunikaty dla gracza -->
+            </div>
+        </div>
+
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

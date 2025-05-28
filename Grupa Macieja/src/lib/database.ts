@@ -14,8 +14,7 @@ async function initRedis(): Promise<RedisClientType> {
       url: process.env.REDIS_URL || "redis://localhost:6379",
       // Add additional config if needed
       socket: {
-        connectTimeout: 60000,
-        lazyConnect: true,
+        connectTimeout: 60000
       },
     });
 

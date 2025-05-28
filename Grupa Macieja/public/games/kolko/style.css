@@ -1,0 +1,59 @@
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #040926; /* ciemne tło */
+  color: #a85751; /* główny kolor tekstu */
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 13px;
+  margin: 20px auto;
+}
+
+.cell {
+  background-color: #251351; /* fioletowe kafelki */
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  border: 4px solid #7d2e68; /* ciemny fiolet na obramowanie */
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.5s, color 0.5s, box-shadow 0.4s;
+  box-shadow: 0 2px 12px 0 #04092666; /* delikatny cień na stałe */
+}
+
+.cell:hover {
+  background-color: #7d2e68;
+  color: #c97b84;
+  box-shadow: 0 0 18px 4px #c97b84, 0 2px 12px 0 #7d2e6888; /* pośrednie światło */
+}
+
+.message {
+  font-size: 1.5rem;
+  color: #c97b84; /* jasny róż na komunikaty */
+}
+
+.cell.taken {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cell.X {
+  color: #c97b84; /* jasny róż dla X */
+}
+
+.cell.O {
+  color: #a85751; /* ciepły akcent dla O */
+}

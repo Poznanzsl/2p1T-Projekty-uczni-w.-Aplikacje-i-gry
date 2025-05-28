@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <title></title>
+</head>
+<body>
+    <h1>Minesweeper</h1>
+    <div class="difficulty-selector">
+        <label for="difficulty">Select difficulty:</label>
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="custom">Custom</option>
+        </select>
+        <div id="custom-difficulty" style="display: none;">
+            <label for="rows">Rows:</label>
+            <input type="number" id="rows" value="10" min="1" max="50">
+            <label for="cols">Columns:</label>
+            <input type="number" id="cols" value="10" min="1" max="50">
+            <label for="mines">Mines:</label>
+            <input type="number" id="mines" value="10" min="1">
+        </div>
+    </div>
+    <div class="game-container">
+        <div id="board"></div>
+        <div class="controls">
+            <button id="start-button" onclick="startGame()">Start</button>
+        </div>
+        <div class="scoreboard">
+            <div class="score">Remaining mines: <span id="mines-remaining">0</span></div>
+            <div class="time">Time: <span id="time">0</span>s</div>
+        </div>
+    </div>
+    <div id="game-over" class="hidden"> 
+        <h2>Game Over</h2>
+        <button onclick="restartFullGame()">Play again</button> 
+    </div>
+    <div id="win" class="hidden"> 
+        <h2>Congratulations! You won!</h2>
+        <button onclick="restartFullGame()">Play again</button> 
+    </div>
+</body>
+</html>

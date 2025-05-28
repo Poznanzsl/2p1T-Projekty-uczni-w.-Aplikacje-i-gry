@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Pak</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --wall-color: #2563eb;
+            --dot-color: #fbbf24;
+            --pak-color: #f59e0b;
+            --ghost-color: #ef4444;
+            --border-color: #e5e7eb;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #111827;
+            --text-color: #f9fafb;
+            --wall-color: #3b82f6;
+            --dot-color: #fcd34d;
+            --pak-color: #f59e0b;
+            --ghost-color: #f87171;
+            --border-color: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .game-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .game-board {
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        .cell {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+        }
+
+        .wall {
+            background: var(--wall-color);
+        }
+
+        .dot {
+            background: var(--dot-color);
+            border-radius: 50%;
+            width: 4px;
+            height: 4px;
+            left: 8px;
+            top: 8px;
+        }
+
+        .pak {
+            background: var(--pak-color);
+            border-radius: 50%;
+            z-index: 10;
+            transition: left 0.1s, top 0.1s;
+        }
+
+        .ghost {
+            background: var(--ghost-color);
+            border-radius: 50% 50% 0 0;
+            z-index: 5;
+            transition: left 0.15s, top 0.15s;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 200px;
+        }
+
+        .score-board, .high-scores {
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .score-board h3, .high-scores h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .high-scores-list {
+            list-style: none;
+        }
+
+        .high-scores-list li {
+            padding: 2px 0;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            border: 2px solid var(--border-color);
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .controls h3 {
+            margin-bottom: 10px;
+        }
+
+        .controls p {
+            font-size: 0.8rem;
+            margin: 2px 0;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-color);
+            border: 3px solid var(--text-color);
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            z-index: 100;
+        }
+
+        .game-over button {
+            background: var(--text-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-board {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .cell {
+                width: 15px;
+                height: 15px;
+            }
+            
+            .dot {
+                width: 3px;
+                height: 3px;
+                left: 6px;
+                top: 6px;
+            }
+        }
+    </style>
+
+    <script src="/api-sdk.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>VIBE PAK</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+
+    <div class="game-container">
+        <div class="game-board" id="gameBoard"></div>
+        
+        <div class="info-panel">
+            <div class="score-board">
+                <h3>Score</h3>
+                <div class="score" id="currentScore">0</div>
+                <div>Level: <span id="level">1</span></div>
+                <div>Lives: <span id="lives">3</span></div>
+            </div>
+
+            <div class="high-scores">
+                <h3>High Scores</h3>
+                <ol class="high-scores-list" id="highScoresList">
+                    <li>No scores yet</li>
+                </ol>
+            </div>
+
+            <div class="controls">
+                <h3>Controls</h3>
+                <p>↑ ↓ ← → Arrow Keys</p>
+                <p>WASD Keys</p>
+                <p>Collect all dots!</p>
+                <p>Avoid ghosts!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            score: 0,
+            level: 1,
+            lives: 3,
+            gameRunning: false,
+            pak: { x: 1, y: 1, dx: 0, dy: 0 },
+            ghosts: [],
+            dots: [],
+            gameBoard: [],
+            boardWidth: 20,
+            boardHeight: 20,
+            pakMoveCounter: 0,
+            ghostMoveCounter: 0
+        };
+
+        const store = new GameStorage("pak");
+        (async () => {
+            await store.init();
+            await updateHighScoresList();
+        })();
+
+        // Game board layout (1 = wall, 0 = empty, 2 = dot)
+        const levelLayout = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,2,1,1,1,2,1,1,2,1,1,1,2,1,1,2,1],
+            [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,2,1,2,1,1,1,1,1,1,2,1,2,1,1,2,1],
+            [1,2,2,2,2,1,2,2,2,1,1,2,2,2,1,2,2,2,2,1],
+            [1,1,1,1,2,1,1,1,0,1,1,0,1,1,1,2,1,1,1,1],
+            [0,0,0,1,2,1,0,0,0,0,0,0,0,0,1,2,1,0,0,0],
+            [1,1,1,1,2,1,0,1,0,0,0,0,1,0,1,2,1,1,1,1],
+            [0,0,0,0,2,0,0,1,0,0,0,0,1,0,0,2,0,0,0,0],
+            [1,1,1,1,2,1,0,1,0,0,0,0,1,0,1,2,1,1,1,1],
+            [0,0,0,1,2,1,0,0,0,0,0,0,0,0,1,2,1,0,0,0],
+            [1,1,1,1,2,1,1,1,0,1,1,0,1,1,1,2,1,1,1,1],
+            [1,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1],
+            [1,2,1,1,2,1,1,1,2,1,1,2,1,1,1,2,1,1,2,1],
+            [1,2,2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2,2,1],
+            [1,1,2,1,2,1,2,1,1,1,1,1,1,2,1,2,1,2,1,1],
+            [1,2,2,2,2,1,2,2,2,1,1,2,2,2,1,2,2,2,2,1],
+            [1,2,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        function initGame() {
+            gameState.gameBoard = levelLayout.map(row => [...row]);
+            gameState.pak = { x: 1, y: 1, dx: 1, dy: 0 };
+            gameState.ghosts = [
+                { x: 9, y: 9, dx: 1, dy: 0 },
+                { x: 10, y: 9, dx: -1, dy: 0 },
+                { x: 9, y: 10, dx: 0, dy: 1 },
+                { x: 10, y: 10, dx: 0, dy: -1 }
+            ];
+            gameState.dots = [];
+            gameState.pakMoveCounter = 0;
+            gameState.ghostMoveCounter = 0;
+            
+            // Count dots
+            for (let y = 0; y < gameState.boardHeight; y++) {
+                for (let x = 0; x < gameState.boardWidth; x++) {
+                    if (gameState.gameBoard[y][x] === 2) {
+                        gameState.dots.push({ x, y });
+                    }
+                }
+            }
+            
+            gameState.gameRunning = true;
+            renderBoard();
+            gameLoop();
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+
+            // Render board
+            for (let y = 0; y < gameState.boardHeight; y++) {
+                for (let x = 0; x < gameState.boardWidth; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.style.left = (x * 20) + 'px';
+                    cell.style.top = (y * 20) + 'px';
+
+                    if (gameState.gameBoard[y][x] === 1) {
+                        cell.classList.add('wall');
+                    } else if (gameState.gameBoard[y][x] === 2) {
+                        const dot = document.createElement('div');
+                        dot.className = 'dot';
+                        cell.appendChild(dot);
+                    }
+
+                    board.appendChild(cell);
+                }
+            }
+
+            // Render Pak
+            const pakElement = document.createElement('div');
+            pakElement.className = 'cell pak';
+            pakElement.style.left = (gameState.pak.x * 20) + 'px';
+            pakElement.style.top = (gameState.pak.y * 20) + 'px';
+            board.appendChild(pakElement);
+
+            // Render ghosts
+            gameState.ghosts.forEach(ghost => {
+                const ghostElement = document.createElement('div');
+                ghostElement.className = 'cell ghost';
+                ghostElement.style.left = (ghost.x * 20) + 'px';
+                ghostElement.style.top = (ghost.y * 20) + 'px';
+                board.appendChild(ghostElement);
+            });
+
+            // Update UI
+            document.getElementById('currentScore').textContent = gameState.score;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('lives').textContent = gameState.lives;
+        }
+
+        function movePak() {
+            const newX = gameState.pak.x + gameState.pak.dx;
+            const newY = gameState.pak.y + gameState.pak.dy;
+
+            // Check bounds and walls
+            if (newX >= 0 && newX < gameState.boardWidth && 
+                newY >= 0 && newY < gameState.boardHeight &&
+                gameState.gameBoard[newY][newX] !== 1) {
+                
+                gameState.pak.x = newX;
+                gameState.pak.y = newY;
+
+                // Collect dot
+                if (gameState.gameBoard[newY][newX] === 2) {
+                    gameState.gameBoard[newY][newX] = 0;
+                    gameState.score += 10;
+                    gameState.dots = gameState.dots.filter(dot => !(dot.x === newX && dot.y === newY));
+
+                    // Check win condition
+                    if (gameState.dots.length === 0) {
+                        gameState.level++;
+                        setTimeout(() => {
+                            initGame();
+                        }, 1000);
+                    }
+                }
+            } else {
+                // Stop if hitting a wall
+                gameState.pak.dx = 0;
+                gameState.pak.dy = 0;
+            }
+        }
+
+        function changePakDirection(dx, dy) {
+            // Check if the new direction is valid
+            const newX = gameState.pak.x + dx;
+            const newY = gameState.pak.y + dy;
+
+            if (newX >= 0 && newX < gameState.boardWidth && 
+                newY >= 0 && newY < gameState.boardHeight &&
+                gameState.gameBoard[newY][newX] !== 1) {
+                
+                gameState.pak.dx = dx;
+                gameState.pak.dy = dy;
+            }
+        }
+
+        function moveGhosts() {
+            gameState.ghosts.forEach(ghost => {
+                const possibleMoves = [
+                    { dx: 1, dy: 0 },
+                    { dx: -1, dy: 0 },
+                    { dx: 0, dy: 1 },
+                    { dx: 0, dy: -1 }
+                ];
+
+                // Filter valid moves
+                const validMoves = possibleMoves.filter(move => {
+                    const newX = ghost.x + move.dx;
+                    const newY = ghost.y + move.dy;
+                    return newX >= 0 && newX < gameState.boardWidth &&
+                           newY >= 0 && newY < gameState.boardHeight &&
+                           gameState.gameBoard[newY][newX] !== 1;
+                });
+
+                if (validMoves.length > 0) {
+                    // Simple AI: sometimes random, sometimes chase
+                    let chosenMove;
+                    if (Math.random() < 0.3) {
+                        // Random movement
+                        chosenMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+                    } else {
+                        // Chase Pak
+                        const pakX = gameState.pak.x;
+                        const pakY = gameState.pak.y;
+                        chosenMove = validMoves.reduce((best, move) => {
+                            const newX = ghost.x + move.dx;
+                            const newY = ghost.y + move.dy;
+                            const distToPak = Math.abs(newX - pakX) + Math.abs(newY - pakY);
+                            const bestDistToPak = Math.abs(ghost.x + best.dx - pakX) + Math.abs(ghost.y + best.dy - pakY);
+                            return distToPak < bestDistToPak ? move : best;
+                        });
+                    }
+
+                    ghost.x += chosenMove.dx;
+                    ghost.y += chosenMove.dy;
+                    ghost.dx = chosenMove.dx;
+                    ghost.dy = chosenMove.dy;
+                }
+            });
+        }
+
+        function checkCollisions() {
+            gameState.ghosts.forEach(ghost => {
+                if (ghost.x === gameState.pak.x && ghost.y === gameState.pak.y) {
+                    gameState.lives--;
+                    if (gameState.lives <= 0) {
+                        gameOver();
+                    } else {
+                        // Reset positions
+                        gameState.pak = { x: 1, y: 1, dx: 1, dy: 0 };
+                        gameState.ghosts = [
+                            { x: 9, y: 9, dx: 1, dy: 0 },
+                            { x: 10, y: 9, dx: -1, dy: 0 },
+                            { x: 9, y: 10, dx: 0, dy: 1 },
+                            { x: 10, y: 10, dx: 0, dy: -1 }
+                        ];
+                    }
+                }
+            });
+        }
+
+        async function gameOver() {
+            gameState.gameRunning = false;
+            
+            // Add to high scores (in account or session storage)
+            if (gameState.score > 0) {
+                const highScores = await store.getItem("highScores") ?? [];
+                console.log(highScores);
+                highScores.push(gameState.score);
+                highScores.sort((a, b) => b - a);
+                store.setItem("highScores", highScores);
+                
+                await store.setItem("highScores", highScores.slice(0, 5));
+                updateHighScoresList();
+            }
+
+            // Show game over screen
+            const gameOverDiv = document.createElement('div');
+            gameOverDiv.className = 'game-over';
+            gameOverDiv.innerHTML = `
+                <h2>Game Over!</h2>
+                <p>Final Score: ${gameState.score}</p>
+                <button onclick="restartGame()">Play Again</button>
+            `;
+            document.getElementById('gameBoard').appendChild(gameOverDiv);
+        }
+
+        function restartGame() {
+            gameState = {
+                score: 0,
+                level: 1,
+                lives: 3,
+                gameRunning: false,
+                pak: { x: 1, y: 1, dx: 1, dy: 0 },
+                ghosts: [],
+                dots: [],
+                gameBoard: [],
+                boardWidth: 20,
+                boardHeight: 20,
+                pakMoveCounter: 0,
+                ghostMoveCounter: 0
+            };
+            initGame();
+        }
+
+        async function updateHighScoresList() {
+            const highScores = await store.getItem("highScores") ?? [];
+            const list = document.getElementById('highScoresList');
+            if (highScores.length === 0) {
+                list.innerHTML = '<li>No scores yet</li>';
+            } else {
+                list.innerHTML = highScores.map((score, index) => 
+                    `<li>${index + 1}. ${score}</li>`
+                ).join('');
+            }
+        }
+
+        function gameLoop() {
+            if (!gameState.gameRunning) return;
+
+            // Move Pak every frame (automatic movement)
+            gameState.pakMoveCounter++;
+            if (gameState.pakMoveCounter >= 3) { // Pak moves every 3 frames
+                movePak();
+                gameState.pakMoveCounter = 0;
+            }
+
+            // Move ghosts less frequently
+            gameState.ghostMoveCounter++;
+            if (gameState.ghostMoveCounter >= 8) { // Ghosts move every 8 frames (much slower)
+                moveGhosts();
+                gameState.ghostMoveCounter = 0;
+            }
+
+            checkCollisions();
+            renderBoard();
+
+            setTimeout(gameLoop, 100); // Faster frame rate for smoother movement
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.gameRunning) return;
+
+            switch(e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    e.preventDefault();
+                    changePakDirection(0, -1);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    e.preventDefault();
+                    changePakDirection(0, 1);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    e.preventDefault();
+                    changePakDirection(-1, 0);
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    e.preventDefault();
+                    changePakDirection(1, 0);
+                    break;
+            }
+        });
+
+        // Initialize the game
+        initGame();
+    </script>
+</body>
+</html>

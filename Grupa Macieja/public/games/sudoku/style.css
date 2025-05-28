@@ -1,0 +1,306 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #333;
+    padding-top: 20px; 
+    padding-bottom: 20px;
+}
+
+.game-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 900px; 
+    width: 95%;
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.controls-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    gap: 20px; 
+}
+
+.difficulty-section, .actions-section {
+    background-color: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+    min-width: 280px;
+    flex-grow: 1; 
+}
+
+.difficulty-section h2, .actions-section h2 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: #34495e;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button:active, button.active {
+    background-color: #20638f;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.sudoku-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#sudoku-board {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(9, 1fr);
+    width: 360px;
+    height: 360px;
+    border: 3px solid #333;
+    background-color: #fff;
+}
+
+.sudoku-cell {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4em; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box; 
+}
+
+/*
+.sudoku-cell[style*="border-bottom-width: 3px"] {
+    border-bottom-color: #333 !important;
+}
+.sudoku-cell[style*="border-right-width: 3px"] {
+    border-right-color: #333 !important;
+}
+*/
+
+#sudoku-board {
+    position: relative;
+}
+
+.sudoku-grid-line {
+    position: absolute;
+    background-color: #333;
+    z-index: 10;
+}
+
+.sudoku-horizontal {
+    height: 3px;
+    width: 100%;
+    left: 0;
+    transform: translateY(-1.5px); /* żeby linia była dokładnie w przejściu */
+}
+
+.sudoku-vertical {
+    width: 3px;
+    height: 100%;
+    top: 0;
+    transform: translateX(-1.5px);
+}
+
+
+.sudoku-cell:hover:not(.initial-cell) {
+    background-color: #ecf0f1;
+}
+
+.initial-cell {
+    background-color: #e9ecef;
+    color: #2c3e50;
+    cursor: default;
+}
+
+.selected-cell {
+    background-color: #aed9f7 !important; /* Jaśniejszy niebieski dla zaznaczenia */
+}
+
+.highlight-rcb { /* Podświetlenie wiersza, kolumny, bloku */
+    background-color: #e8f0fe !important;
+}
+.selected-cell.highlight-rcb { /* Zaznaczona komórka na tle podświetlenia */
+     background-color: #cce0ff !important;
+}
+
+
+.incorrect-cell {
+    color: #e74c3c !important; /* Czerwony dla błędów */
+}
+.user-correct-cell {
+    color: #27ae60; /* Zielony dla poprawnych wpisów użytkownika */
+}
+
+.incorrect-animation {
+    animation: shake 0.4s;
+    background-color: #ffdddd !important;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.permanently-incorrect { /* Po kliknięciu "Sprawdź" */
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+.hint-cell {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+}
+
+.input-panel {
+    display: flex;
+    flex-direction: column; /* Domyślnie w kolumnie */
+    align-items: center;
+    gap: 15px;
+}
+
+.info-display {
+    display: flex;
+    gap: 20px;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #ecf0f1;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.info-display p {
+    margin: 0;
+}
+
+.digits {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.digits button {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2em;
+    background-color: #2ecc71;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.digits button:hover {
+    background-color: #27ae60;
+}
+.digits button#erase-btn {
+    background-color: #e74c3c;
+}
+.digits button#erase-btn:hover {
+    background-color: #c0392b;
+}
+
+.game-message-display {
+    margin-top: 10px;
+    font-weight: bold;
+    min-height: 1.5em; /* Żeby nie skakał layout */
+    color: #16a085;
+}
+
+/* Prosta responsywność */
+@media (min-width: 768px) {
+    .input-panel {
+        flex-direction: row; /* Na większych ekranach info i cyfry obok siebie */
+        justify-content: space-around;
+        width: 100%;
+    }
+    .sudoku-area {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    #sudoku-board {
+        width: 90vw; /* Dostosuj do szerokości ekranu */
+        height: 90vw; /* Zachowaj proporcje kwadratu */
+        font-size: 3.5vw; /* Skaluj czcionkę w komórkach */
+    }
+    .digits button {
+        width: 30px;
+        height: 30px;
+        font-size: 1em;
+    }
+    button {
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+    .controls-panel {
+        flex-direction: column;
+        align-items: stretch; /* Sekcje rozciągną się na całą szerokość */
+    }
+}
+
+.highlight-same-number {
+    background-color: #fff3cd !important; /* Jasnożółte tło dla tych samych numerów */
+    /* Upewnij się, że nie konfliktuje za bardzo z .selected-cell czy .highlight-rcb */
+}
+
+/* Zaznaczona komórka, która jest też "tą samą liczbą" */
+.selected-cell.highlight-same-number {
+    background-color: #ffe082 !important; /* Ciemniejszy żółty, aby było widać, że jest zaznaczona */
+}
+
+/* Animacja dla zablokowanej akcji */
+.shake-blocked-animation {
+    animation: shake-light 0.3s;
+}
+
+@keyframes shake-light { /* Lżejsze potrząśnięcie niż przy błędzie */
+    0%, 100% { transform: translateX(0); }
+    33% { transform: translateX(-2px); }
+    66% { transform: translateX(2px); }
+}
+
+.digits button.disabled-digit {
+    background-color: #bdc3c7 !important; /* Szary dla wyłączonych */
+    color: #7f8c8d !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
